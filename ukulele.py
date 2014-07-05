@@ -1,19 +1,21 @@
 #!/usr/bin/env python
-Maxfret = 12
+Maxfret = 2 # 12
 Tuning = ['g', 'c', 'e', 'a']
 Pitches = ['c', 'c#', 'd', 'eb', 'e', 'f', 'f#', 'g', 'g#', 'a', 'bb', 'b']
 from itertools import *
 
-NumChords=0
-for p in product(range(0,Maxfret+1), repeat=4):
-    NumChords += 1
-print NumChords
-
 def fing2notes(fing):
     notes=[None]*len(fing)
     for i in range(len(fing)):
-        notes[i]=Pitches[Pitches.index(Tuning[i]) + fing[i]]
+        notes[i] = Pitches[ (Pitches.index(Tuning[i]) + fing[i]) % 12 ]
     return notes
+
+
+
+for f in product(range(0,Maxfret+1), repeat=4):
+    print fing2notes(f)
+
+
 
 #### tests
 
