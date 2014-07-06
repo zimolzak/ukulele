@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-Maxfret = 2 # 12
+Maxfret = 4
 Tuning = ['G', 'C', 'E', 'A']
 Pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 from itertools import *
@@ -49,7 +49,7 @@ class Chord:
             elif self.interval_list == [7,5]: self.chordtype = "5"
             elif self.interval_list == [3,3,3,3]: self.chordtype = "dim7"
             elif self.interval_list == [3,3,4,2]: self.chordtype = "m7b5"
-            # C6 = Am7 etc
+            # C6 = Am7, etc., so we never mention 6th chords.
             if self.chordtype != None:
                 self.root = self.normnotes[0]
                 break
@@ -60,9 +60,24 @@ class Chord:
         print self.fing, "\t", self.allnotes, "\t", self.interval_list, "\t",
         print self.root, self.chordtype
 
-for f in product(range(0,Maxfret+1), repeat=4):
+    def print_short(self):
+        if self.chordtype == None:
+            pass # unknown chord; do not print
+        else:
+            self.fingstr = ""
+            for i in range(len(self.fing)):
+                if i == 0:
+                    self.fingstr += str(self.fing[i])
+                else:
+                    self.fingstr += ","
+                    self.fingstr += str(self.fing[i])
+            print ''.join([self.root, self.chordtype]), "\t", self.fingstr
+
+#### main loop
+
+for f in product(range(0,Maxfret+1), repeat=len(Tuning)):
     c = Chord(f)
-    c.print_table_row()
+    c.print_short()
 
 #### tests
 
@@ -93,7 +108,10 @@ assert fchord.root == "F"
 assert dmchord.root == "D"
 assert gmchord.root == "G"
 assert c7.root == "C"
-# do not assert root tone of a dim7 because there are four roots
+
+# Do not assert root tone of a dim7 because there are four equally
+# valid roots.
+
 assert caug.root == "C"
 assert c9.root == "C"
 assert c9alt.root == "C"
