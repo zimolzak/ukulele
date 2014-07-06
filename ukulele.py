@@ -43,9 +43,52 @@ def decode_intervals(inter):
         elif inter == [4,3,3,2]: return "seventh"
         inter = rotate(inter)
 
-for f in product(range(0,Maxfret+1), repeat=4):
-    print f, "\t", fing2notes(f), "\t", intervals(fing2notes(f)),
-    print decode_intervals(intervals(fing2notes(f)))
+####
+
+class Chord:
+    
+    def __init__(self, fing):
+        self.fing = fing
+        ##fing2notes
+        self.allnotes=[None]*len(fing)
+        for i in range(len(fing)):
+            self.allnotes[i] = Pitches[ (Pitches.index(Tuning[i]) + fing[i]) % 12 ]
+        ##normalize
+        self.normnotes=list(set(self.allnotes))
+        self.normnotes.sort()
+        ##intervals
+        self.N = len(self.normnotes)
+        self.ps = Pitches
+        self.ps.sort()
+        self.pitchlist = [None]*self.N
+        self.interval_list = [None]*self.N
+        for i in range(self.N):
+            self.pitchlist[i] = self.ps.index(self.normnotes[i])
+        for i in range(self.N):
+            self.interval_list[i] = self.pitchlist[(i+1) % self.N] - self.pitchlist[i]
+            if self.interval_list[i] < 0:
+                self.interval_list[i] += 12
+        #decode
+        self.chordtype = None
+        for i in range(len(self.interval_list)):
+            if self.interval_list == [3,4,5]: self.chordtype = "minor"
+            elif self.interval_list == [4,3,5]: self.chordtype = "major"
+            elif self.interval_list == [4,3,3,2]: self.chordtype = "seventh"
+            self.interval_list = rotate(self.interval_list)
+
+UseOO = 1
+
+if UseOO:
+    print "Using OO"
+    for f in product(range(0,Maxfret+1), repeat=4):
+        c = Chord(f)
+        print f, "\t", c.allnotes, "\t", c.interval_list, "\t",
+        print c.chordtype
+else:
+    print "Not using OO"
+    for f in product(range(0,Maxfret+1), repeat=4):
+        print f, "\t", fing2notes(f), "\t", intervals(fing2notes(f)), "\t",
+        print decode_intervals(intervals(fing2notes(f)))
 
 #### tests
 
@@ -56,3 +99,11 @@ gm_fing=[0,2,3,1]
 assert fing2notes(f_fing) == ['a', 'c', 'f', 'a']
 assert fing2notes(dm_fing) == ['a', 'd', 'f', 'a']
 assert fing2notes(gm_fing) == ['g', 'd', 'g', 'a#']
+
+fchord=Chord([2,0,1,0])
+dmchord=Chord([2,2,1,0])
+gmchord=Chord([0,2,3,1])
+
+assert fchord.allnotes == ['a', 'c', 'f', 'a']
+assert dmchord.allnotes == ['a', 'd', 'f', 'a']
+assert gmchord.allnotes == ['g', 'd', 'g', 'a#']
