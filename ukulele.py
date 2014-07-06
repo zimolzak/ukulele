@@ -1,49 +1,14 @@
 #!/usr/bin/env python
 Maxfret = 2 # 12
-Tuning = ['g', 'c', 'e', 'a']
-Pitches = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b']
+Tuning = ['G', 'C', 'E', 'A']
+Pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 from itertools import *
-
-def fing2notes(fing):
-    notes=[None]*len(fing)
-    for i in range(len(fing)):
-        notes[i] = Pitches[ (Pitches.index(Tuning[i]) + fing[i]) % 12 ]
-    return notes
-
-def normalize(chord):
-    chord=list(set(chord))
-    chord.sort()
-    return chord
-
-def intervals(chord):
-    chord = normalize(chord)
-    N = len(chord)
-    ps = Pitches
-    ps.sort()
-    pitchlist = [None]*N
-    interval_list = [None]*N
-    for i in range(N):
-        pitchlist[i] = ps.index(chord[i])
-    for i in range(N):
-        interval_list[i] = pitchlist[(i+1) % N] - pitchlist[i]
-        if interval_list[i] < 0:
-            interval_list[i] += 12
-    return interval_list
 
 def rotate(list, n=1):
     if len(list) == 0:
         return list
     n = n % len(list)
     return list[n:] + list[:n]
-
-def decode_intervals(inter):
-    for i in range(len(inter)):
-        if inter == [3,4,5]: return "minor"
-        elif inter == [4,3,5]: return "major"
-        elif inter == [4,3,3,2]: return "seventh"
-        inter = rotate(inter)
-
-####
 
 class Chord:
     
@@ -70,40 +35,65 @@ class Chord:
                 self.interval_list[i] += 12
         #decode
         self.chordtype = None
+        self.root = None
         for i in range(len(self.interval_list)):
-            if self.interval_list == [3,4,5]: self.chordtype = "minor"
-            elif self.interval_list == [4,3,5]: self.chordtype = "major"
-            elif self.interval_list == [4,3,3,2]: self.chordtype = "seventh"
+            if self.interval_list == [3,4,5]: self.chordtype = "m"
+            elif self.interval_list == [4,3,5]: self.chordtype = ""
+            elif self.interval_list == [4,3,3,2]: self.chordtype = "7"
+            elif self.interval_list == [4,3,4,1]: self.chordtype = "maj7"
+            elif self.interval_list == [3,4,3,2]: self.chordtype = "m7"
+            elif self.interval_list == [3,3,6]: self.chordtype = "dim"
+            elif self.interval_list == [4,4,4]: self.chordtype = "aug"
+            elif self.interval_list == [2,2,3,5]: self.chordtype = "9"
+            elif self.interval_list == [5,2,5]: self.chordtype = "sus"
+            elif self.interval_list == [7,5]: self.chordtype = "5"
+            elif self.interval_list == [3,3,3,3]: self.chordtype = "dim7"
+            elif self.interval_list == [3,3,4,2]: self.chordtype = "m7b5"
+            # C6 = Am7 etc
+            if self.chordtype != None:
+                self.root = self.normnotes[0]
+                break
             self.interval_list = rotate(self.interval_list)
+            self.normnotes = rotate(self.normnotes)
 
-UseOO = 1
+    def print_table_row(self):
+        print self.fing, "\t", self.allnotes, "\t", self.interval_list, "\t",
+        print self.root, self.chordtype
 
-if UseOO:
-    print "Using OO"
-    for f in product(range(0,Maxfret+1), repeat=4):
-        c = Chord(f)
-        print f, "\t", c.allnotes, "\t", c.interval_list, "\t",
-        print c.chordtype
-else:
-    print "Not using OO"
-    for f in product(range(0,Maxfret+1), repeat=4):
-        print f, "\t", fing2notes(f), "\t", intervals(fing2notes(f)), "\t",
-        print decode_intervals(intervals(fing2notes(f)))
+for f in product(range(0,Maxfret+1), repeat=4):
+    c = Chord(f)
+    c.print_table_row()
 
 #### tests
-
-f_fing=[2,0,1,0]
-dm_fing=[2,2,1,0]
-gm_fing=[0,2,3,1]
-
-assert fing2notes(f_fing) == ['a', 'c', 'f', 'a']
-assert fing2notes(dm_fing) == ['a', 'd', 'f', 'a']
-assert fing2notes(gm_fing) == ['g', 'd', 'g', 'a#']
 
 fchord=Chord([2,0,1,0])
 dmchord=Chord([2,2,1,0])
 gmchord=Chord([0,2,3,1])
 
-assert fchord.allnotes == ['a', 'c', 'f', 'a']
-assert dmchord.allnotes == ['a', 'd', 'f', 'a']
-assert gmchord.allnotes == ['g', 'd', 'g', 'a#']
+c7=Chord([0,0,0,1])
+cdim7=Chord([2,3,2,3])
+caug=Chord([1,0,0,3])
+c9=Chord([0,0,0,5])
+c9alt=Chord([0,2,0,3])
+
+assert fchord.allnotes == ['A', 'C', 'F', 'A']
+assert dmchord.allnotes == ['A', 'D', 'F', 'A']
+assert gmchord.allnotes == ['G', 'D', 'G', 'A#']
+assert fchord.chordtype == ""
+assert dmchord.chordtype == "m"
+assert gmchord.chordtype == "m"
+
+assert c7.chordtype == "7"
+assert cdim7.chordtype == "dim7"
+assert caug.chordtype == "aug"
+assert c9.chordtype == "9"
+assert c9alt.chordtype == "9"
+
+assert fchord.root == "F"
+assert dmchord.root == "D"
+assert gmchord.root == "G"
+assert c7.root == "C"
+# do not assert root tone of a dim7 because there are four roots
+assert caug.root == "C"
+assert c9.root == "C"
+assert c9alt.root == "C"
