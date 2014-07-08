@@ -110,8 +110,7 @@ assert gmchord.root == "G"
 assert c7.root == "C"
 
 # Do not assert root tone of a dim7 because there are four equally
-# valid roots.
+# valid roots. (Or aug: 3 equally valid)
 
-assert caug.root == "C"
 assert c9.root == "C"
 assert c9alt.root == "C"
