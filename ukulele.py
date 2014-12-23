@@ -80,7 +80,7 @@ class Chord:
 #### main loop
 
 find_these = None
-find_these = ['A#maj7', 'A#7', 'D#', 'D', 'Gm7', 'C7', 'F7sus', 'D#maj7', 'Daug'] # comment out if no search
+find_these = ['C', 'Gm7', 'F', 'A#maj7', 'Dm7'] # comment out if no search
 
 for f in product(range(0,Maxfret+1), repeat=len(Tuning)):
     c = Chord(f)
