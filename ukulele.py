@@ -3,7 +3,7 @@
 Maxfret = 4
 Ukulele = ['G', 'C', 'E', 'A']
 Guitar = ['E', 'A', 'D', 'G', 'B', 'E']
-Tuning = Ukulele
+Tuning = Guitar
 Pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 from itertools import *
 
@@ -52,6 +52,7 @@ class Chord:
             elif self.interval_list == [7,5]: self.chordtype = "5"
             elif self.interval_list == [3,3,3,3]: self.chordtype = "dim7"
             elif self.interval_list == [3,3,4,2]: self.chordtype = "m7b5"
+            elif self.interval_list == [5,2,3,2]: self.chordtype = "7sus"
             # C6 = Am7, etc., so we never mention 6th chords.
             if self.chordtype != None:
                 self.root = self.normnotes[0]
@@ -76,44 +77,12 @@ class Chord:
                     self.fingstr += str(self.fing[i])
             print ' '.join([self.root, self.chordtype]), "\t", self.fingstr
 
-#### main loop
+#### main
 
-for f in product(range(0,Maxfret+1), repeat=len(Tuning)):
-    c = Chord(f)
-    c.print_short()
+# for f in product(range(0,Maxfret+1), repeat=len(Tuning)):
+#     c = Chord(f)
+#     c.print_short()
 
-#### tests
+f7sus = Chord((1,3,1,3,1,1))
 
-fchord=Chord([2,0,1,0])
-dmchord=Chord([2,2,1,0])
-gmchord=Chord([0,2,3,1])
-
-c7=Chord([0,0,0,1])
-cdim7=Chord([2,3,2,3])
-caug=Chord([1,0,0,3])
-c9=Chord([0,0,0,5])
-c9alt=Chord([0,2,0,3])
-
-assert fchord.allnotes == ['A', 'C', 'F', 'A']
-assert dmchord.allnotes == ['A', 'D', 'F', 'A']
-assert gmchord.allnotes == ['G', 'D', 'G', 'A#']
-assert fchord.chordtype == ""
-assert dmchord.chordtype == "m"
-assert gmchord.chordtype == "m"
-
-assert c7.chordtype == "7"
-assert cdim7.chordtype == "dim7"
-assert caug.chordtype == "aug"
-assert c9.chordtype == "9"
-assert c9alt.chordtype == "9"
-
-assert fchord.root == "F"
-assert dmchord.root == "D"
-assert gmchord.root == "G"
-assert c7.root == "C"
-
-# Do not assert root tone of a dim7 because there are four equally
-# valid roots. (Or aug: 3 equally valid)
-
-assert c9.root == "C"
-assert c9alt.root == "C"
+f7sus.print_table_row()
