@@ -52,6 +52,7 @@ class Chord:
             elif self.interval_list == [7,5]: self.chordtype = "5"
             elif self.interval_list == [3,3,3,3]: self.chordtype = "dim7"
             elif self.interval_list == [3,3,4,2]: self.chordtype = "m7b5"
+            elif self.interval_list == [5,2,3,2]: self.chordtype = "7sus"
             # C6 = Am7, etc., so we never mention 6th chords.
             if self.chordtype != None:
                 self.root = self.normnotes[0]
