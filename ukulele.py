@@ -83,6 +83,13 @@ class Chord:
 #     c = Chord(f)
 #     c.print_short()
 
+Tuning = Guitar
 f7sus = Chord((1,3,1,3,1,1))
+f7sus.print_table_row()
 
+Tuning = Ukulele
+f7 = Chord((2,3,1,3))
+f7.print_table_row()
+
+f7sus = Chord((3,3,1,3))
 f7sus.print_table_row()
