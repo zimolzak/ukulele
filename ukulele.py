@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+# usage: ./ukulele.py | sort | more
 Maxfret = 4
-Tuning = ['G', 'C', 'E', 'A']
+Ukulele = ['G', 'C', 'E', 'A']
+Guitar = ['E', 'A', 'D', 'G', 'B', 'E']
+Tuning = Ukulele
 Pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 from itertools import *
 
@@ -71,7 +74,7 @@ class Chord:
                 else:
                     self.fingstr += ","
                     self.fingstr += str(self.fing[i])
-            print ''.join([self.root, self.chordtype]), "\t", self.fingstr
+            print ' '.join([self.root, self.chordtype]), "\t", self.fingstr
 
 #### main loop
 
