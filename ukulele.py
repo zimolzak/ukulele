@@ -79,9 +79,18 @@ class Chord:
 
 #### main loop
 
+find_these = None
+find_these = ['A#maj7', 'A#7', 'D#', 'D', 'Gm7', 'C7', 'F7sus', 'D#maj7', 'Daug'] # comment out if no search
+
 for f in product(range(0,Maxfret+1), repeat=len(Tuning)):
     c = Chord(f)
-    c.print_short()
+    if find_these == None:
+        c.print_short() # print all
+    else:
+        if c.root != None:
+            for findme in find_these:
+                if ''.join([c.root, c.chordtype]) == findme:
+                    c.print_short()
 
 #### tests
 
